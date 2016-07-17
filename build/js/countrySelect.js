@@ -51,6 +51,12 @@
 			this._setInitialState();
 			// Start all of the event listeners: input keyup, selectedFlag click
 			this._initListeners();
+			// Return this when the auto country is resolved.
+			this.autoCountryDeferred = new $.Deferred();
+			// Get auto country.
+			this._initAutoCountry();
+
+			return this.autoCountryDeferred;
 		},
 		/********************
 		 *  PRIVATE METHODS
@@ -218,6 +224,13 @@
 				}
 				that.countryInput.val(that.getSelectedCountryData().name);
 			});
+		},
+		_initAutoCountry: function() {
+			if (this.options.initialCountry === "auto") {
+				this._loadAutoCountry();
+			} else {
+				this.autoCountryDeferred.resolve();
+			}
 		},
 		// Focus input and put the cursor at the end
 		_focus: function() {
