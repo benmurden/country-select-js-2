@@ -232,6 +232,33 @@
 				this.autoCountryDeferred.resolve();
 			}
 		},
+		// perform the geo ip lookup
+		_loadAutoCountry: function() {
+			var that = this;
+
+			// 3 options:
+			// 1) already loaded (we're done)
+			// 2) not already started loading (start)
+			// 3) already started loading (do nothing - just wait for loading callback to fire)
+			if ($.fn[pluginName].autoCountry) {
+				this.handleAutoCountry();
+			} else if (!$.fn[pluginName].startedLoadingAutoCountry) {
+				// don't do this twice!
+				$.fn[pluginName].startedLoadingAutoCountry = true;
+
+				if (typeof this.options.geoIpLookup === 'function') {
+					this.options.geoIpLookup(function(countryCode) {
+						$.fn[pluginName].autoCountry = countryCode.toLowerCase();
+						// tell all instances the auto country is ready
+						// TODO: this should just be the current instances
+						// UPDATE: use setTimeout in case their geoIpLookup function calls this callback straight away (e.g. if they have already done the geo ip lookup somewhere else). Using setTimeout means that the current thread of execution will finish before executing this, which allows the plugin to finish initialising.
+						setTimeout(function() {
+							$(".country-select input").countrySelect("handleAutoCountry");
+						});
+					});
+				}
+			}
+		},
 		// Focus input and put the cursor at the end
 		_focus: function() {
 			this.countryInput.focus();
