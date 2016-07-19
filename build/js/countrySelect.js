@@ -189,7 +189,7 @@
 				} else {
 					defaultCountry = this.preferredCountries.length ? this.preferredCountries[0] : this.countries[0];
 				}
-				this.selectCountry(defaultCountry.iso2);
+				this.defaultCountry = defaultCountry.iso2;
 			}
 		},
 		// initialise the main event listeners: input keyup, and click selected flag
@@ -229,6 +229,7 @@
 			if (this.options.initialCountry === "auto") {
 				this._loadAutoCountry();
 			} else {
+				this.selectCountry(this.defaultCountry);
 				this.autoCountryDeferred.resolve();
 			}
 		},
@@ -492,7 +493,7 @@
 				this.defaultCountry = $.fn[pluginName].autoCountry;
 				// if there's no initial value in the input, then update the flag
 				if (!this.countryInput.val()) {
-					this.setCountry(this.defaultCountry);
+					this.selectCountry(this.defaultCountry);
 				}
 				this.autoCountryDeferred.resolve();
 			}
