@@ -485,6 +485,18 @@
 		/********************
 		 *  PUBLIC METHODS
 		 ********************/
+		// this is called when the geoip call returns
+		handleAutoCountry: function() {
+			if (this.options.initialCountry === "auto") {
+				// we must set this even if there is an initial val in the input: in case the initial val is invalid and they delete it - they should see their auto country
+				this.defaultCountry = $.fn[pluginName].autoCountry;
+				// if there's no initial value in the input, then update the flag
+				if (!this.countryInput.val()) {
+					this.setCountry(this.defaultCountry);
+				}
+				this.autoCountryDeferred.resolve();
+			}
+		},
 		// get the country data for the currently selected flag
 		getSelectedCountryData: function() {
 			// rely on the fact that we only set 2 classes on the selected flag element:
